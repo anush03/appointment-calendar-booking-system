@@ -16,6 +16,14 @@
   background-color: #000;
   color: #fff;
 }
+.patients {
+  display: flex;
+  height: 90vh;
+
+  background-color: #000;
+  color: #fff;
+  padding-left: 20rem;
+}
 .appointment {
   display: flex;
   height: 100%;
@@ -31,7 +39,19 @@
   padding-left: 100px;
   padding-top: 15px;
 }
+table {
+  border: 2px;
+  width: 800px;
+  height: 200px;
+}
 
+th {
+  border-bottom: 1px solid black;
+}
+
+td {
+  text-align: center;
+}
 /* Navbar CSS */
 .navbar {
   background-color: #ffffff;

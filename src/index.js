@@ -1,14 +1,6 @@
-import React from "react";
 import { createRoot } from "react-dom/client";
-import {
-  createBrowserRouter,
-  RouterProvider,
-  Route,
-  Link,
-  Outlet,
-  createRoutesFromElements,
-} from "react-router-dom";
-import Navbar from "./components/navbar/Navbar";
+import { createBrowserRouter, RouterProvider } from "react-router-dom";
+import App from "./App";
 import "./App.css";
 import Overview from "./routes/Overview";
 import Patients from "./routes/Patients";
@@ -17,8 +9,7 @@ import Dummy from "./routes/Dummy";
 
 const AppLayout = () => (
   <>
-    <Navbar />
-    <Outlet />
+    <App />
   </>
 );
 

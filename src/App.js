@@ -1,13 +1,16 @@
+import { useState } from "react";
 import "./App.css";
-import Calender from "./components/calender/calender";
+import { Outlet } from "react-router-dom";
+import Navbar from "./components/navbar/Navbar";
+import { MyContext } from "./context/Context";
 
 function App() {
+  const [calEvent, setCalEvent] = useState();
   return (
-    <div>
-      <div>
-        <Calender />
-      </div>
-    </div>
+    <MyContext.Provider value={{ calEvent, setCalEvent }}>
+      <Navbar />
+      <Outlet />
+    </MyContext.Provider>
   );
 }
 
