@@ -8,7 +8,7 @@ function Appointment() {
   return (
     <div className="appointment">
       <div className="cal">
-        <Calender setCalEvent={setCalEvent} calEvent={calEvent} />
+        <Calender />
       </div>
     </div>
   );
