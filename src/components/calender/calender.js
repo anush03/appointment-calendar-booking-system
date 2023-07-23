@@ -1,10 +1,4 @@
-import React, {
-  useEffect,
-  useRef,
-  useContext,
-  useState,
-  useCallback,
-} from "react";
+import React, { useEffect, useRef, useContext, useState } from "react";
 import "./calender.css";
 import {
   ScheduleComponent,
@@ -19,14 +13,7 @@ import {
 } from "@syncfusion/ej2-react-schedule";
 import { MyContext } from "../../context/Context";
 import { registerLicense } from "@syncfusion/ej2-base";
-import {
-  setDoc,
-  doc,
-  addDoc,
-  collection,
-  getDoc,
-  updateDoc,
-} from "firebase/firestore";
+import { doc, getDoc, updateDoc } from "firebase/firestore";
 import { db } from "../../Firebase-config";
 // Registering Syncfusion license key
 registerLicense(
@@ -35,22 +22,20 @@ registerLicense(
 
 function onDrag() {}
 function onResize() {}
-const dataE = [
-  {
-    Id: 1,
-    Subject: "Meeting",
-    StartTime: new Date(2023, 6, 18, 10, 0),
-    EndTime: new Date(2023, 6, 18, 12, 30),
-    IsAllDay: false,
-    Status: "Completed",
-    Priority: "High",
-  },
-];
+// const dataE = [
+//   {
+//     Id: 1,
+//     Subject: "Anush",
+//     StartTime: new Date(2023, 6, 23, 10, 0),
+//     EndTime: new Date(2023, 6, 23, 12, 30),
+//     IsAllDay: false,
+//     Priority: "High",
+//   },
+// ];
 
 function Calender() {
   const { calEvent, setCalEvent } = useContext(MyContext);
   const [flag, setflag] = useState(true);
-  const [dataBoundFired, setDataBoundFired] = useState(false);
   const patientsDocRef = doc(db, "patients", "calEvent");
 
   const scheduleObj = useRef(null);
@@ -61,70 +46,55 @@ function Calender() {
         const docSnap = await getDoc(patientsDocRef);
         if (docSnap.exists()) {
           const data = docSnap.data();
-          console.log("Firebase data", data);
+          console.log("Firebase data", typeof data);
 
-          // Convert events from Firestore to the required format
           const convertedEvents = data.calEvent.map((event) => {
             return {
               Id: event.Id,
               Subject: event.Subject,
-              StartTime: new Date(event.StartTime.seconds * 1000), // Convert to milliseconds
-              EndTime: new Date(event.EndTime.seconds * 1000), // Convert to milliseconds
+              StartTime: new Date(event.StartTime.seconds * 1000),
+              EndTime: new Date(event.EndTime.seconds * 1000),
               IsAllDay: event.IsAllDay,
-              Status: event.Status,
-              Priority: event.Priority,
+              // Status: event.Status,
             };
           });
 
-          // Set the converted events to the calEvent state
           setCalEvent(convertedEvents);
           console.log("Intial data", convertedEvents);
-          // Set flag to false to indicate that data is fetched
-          setflag(false);
         }
+        setflag(false);
       } catch (error) {
         console.error("Error fetching calEvent from Firestore:", error);
       }
     };
 
     fetchCalEventsFromFirestore();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
-  // useEffect(() => {
-  //   if (flag === false) {
-  //     const updateFirestoreWithEvents = async () => {
-  //       try {
-  //         await updateDoc(patientsDocRef, {
-  //           calEvent: calEvent,
-  //         });
-  //       } catch (error) {
-  //         console.error("Error updating calEvent in Firestore:", error);
-  //       }
-  //     };
-
-  //     updateFirestoreWithEvents();
-  //   }
-  // }, [calEvent, flag, patientsDocRef]);
-
   const onDataBound = async () => {
-    // let events = scheduleObj.current.getEvents();
-    // console.log("events", events);
     if (flag === false) {
       let events = scheduleObj.current.getEvents();
       console.log("events", events);
 
-      //   try {
-      //     await setDoc(patientsDocRef, {
-      //       calEvent: events,
-      //     });
-      //   } catch (error) {
-      //     console.error("Error updating calEvent in Firestore:", error);
-      //   }
-      // }
-      const filteredEvents = events.filter((event) => event !== undefined);
+      const FilteredEvents = events.filter((event) => event !== undefined);
+      FilteredEvents.forEach((event) => {
+        Object.keys(event).forEach((key) => {
+          if (event[key] === undefined) {
+            event[key] = "";
+          }
+        });
 
-      if (filteredEvents.length > 0) {
+        Object.keys(event).forEach((key) => {
+          if (event[key] === undefined) {
+            delete event[key];
+          }
+        });
+      });
+
+      if (FilteredEvents.length > 0) {
         try {
+          console.log("filteredEvents", FilteredEvents);
           await updateDoc(patientsDocRef, {
             calEvent: events,
           });
@@ -137,99 +107,6 @@ function Calender() {
       }
     }
   };
-  // const [isDataFetched, setDataFetched] = useState(false);
-  // const [shouldUpdateFirestore, setShouldUpdateFirestore] = useState(false);
-
-  // useEffect(() => {
-  //   const fetchCalEventsFromFirestore = async () => {
-  //     try {
-  //       const docSnap = await getDoc(patientsDocRef);
-  //       if (docSnap.exists()) {
-  //         const data = docSnap.data();
-  //         const eventsFromFirestore = data.calEvent || [];
-
-  //         const convertedEvents = eventsFromFirestore.map((event) => {
-  //           return {
-  //             Id: event.Id,
-  //             Subject: event.Subject,
-  //             StartTime: new Date(event.StartTime),
-  //             EndTime: new Date(event.EndTime),
-  //             IsAllDay: event.IsAllDay,
-  //             Status: event.Status,
-  //             Priority: event.Priority,
-  //           };
-  //         });
-
-  //         setCalEvent(convertedEvents);
-  //       }
-  //     } catch (error) {
-  //       console.error("Error fetching calEvent from Firestore:", error);
-  //     }
-  //   };
-
-  //   fetchCalEventsFromFirestore();
-  // }, [patientsDocRef, setCalEvent]);
-
-  // useEffect(() => {
-  //   let shouldUpdateFirestore = false;
-
-  //   const onDataBound = () => {
-  //     // Get the latest events from the ScheduleComponent
-  //     const events = scheduleObj.current.getEvents();
-  //     console.log("events", events);
-
-  //     // Only update calEvent if there are changes in events
-  //     if (!arraysAreEqual(calEvent, events)) {
-  //       setCalEvent(events);
-  //       shouldUpdateFirestore = true;
-  //     }
-  //   };
-
-  //   // Attach the dataBound event handler if scheduleObj.current is not null
-  //   if (scheduleObj.current) {
-  //     scheduleObj.current.dataBound = onDataBound;
-  //   }
-
-  //   // Clean up the event handler when the component unmounts
-  //   return () => {
-  //     // Remove the event handler if scheduleObj.current is not null
-  //     if (scheduleObj.current) {
-  //       scheduleObj.current.dataBound = null;
-  //     }
-
-  //     // Update Firestore with the latest events after all other updates are completed
-  //     if (shouldUpdateFirestore) {
-  //       const updateFirestoreWithEvents = async () => {
-  //         try {
-  //           await updateDoc(patientsDocRef, {
-  //             calEvent: calEvent,
-  //           });
-  //         } catch (error) {
-  //           console.error("Error updating calEvent in Firestore:", error);
-  //         }
-  //       };
-
-  //       updateFirestoreWithEvents();
-  //     }
-  //   };
-  // }, [calEvent, patientsDocRef, setCalEvent]);
-  // // Helper function to check if two arrays are equal
-  // const arraysAreEqual = (array1, array2) => {
-  //   if (array1.length !== array2.length) return false;
-
-  //   for (let i = 0; i < array1.length; i++) {
-  //     if (JSON.stringify(array1[i]) !== JSON.stringify(array2[i])) {
-  //       return false;
-  //     }
-  //   }
-
-  //   return true;
-  // };
-
-  // function onDataBound() {}
-  console.log("Reload");
-  console.log(calEvent);
-  console.log("CorrectFormat", dataE);
 
   return (
     <>
