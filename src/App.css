@@ -16,15 +16,7 @@
   background-color: #000;
   color: #fff;
 }
-/* .patients {
-  display: flex;
-  height: 90vh;
-  justify-content: center;
-  align-items: center;
-  background-color: #000;
-  color: #fff;
-  padding-left: 20rem;
-} */
+
 .patients {
   display: flex;
   flex-direction: column;
@@ -50,22 +42,6 @@
   padding-left: 100px;
   padding-top: 15px;
 }
-/* table {
-  border: 2px;
-  width: 800px;
-  height: 200px;
-}
-
-th {
-  border-bottom: 1px solid black;
-}
-
-td {
-  text-align: center;
-} */
-/* CalendarTable.css */
-
-/* Patients.css */
 
 table {
   width: 100%;

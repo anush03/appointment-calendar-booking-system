@@ -1,11 +1,9 @@
-import React, { useContext } from "react";
-import { MyContext } from "../context/Context";
+import React from "react";
 
 function Dummy() {
-  const { calEvent, setCalEvent } = useContext(MyContext);
   return (
     <div className="home">
-      <h1>Dummy Component {calEvent} </h1>
+      <h1>Dummy Component </h1>
     </div>
   );
 }

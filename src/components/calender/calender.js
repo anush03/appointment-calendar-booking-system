@@ -1,5 +1,4 @@
 import React, { useEffect, useRef, useContext, useState } from "react";
-import "./calender.css";
 import {
   ScheduleComponent,
   Inject,
@@ -46,7 +45,6 @@ function Calender() {
         const docSnap = await getDoc(patientsDocRef);
         if (docSnap.exists()) {
           const data = docSnap.data();
-          console.log("Firebase data", typeof data);
 
           const convertedEvents = data.calEvent.map((event) => {
             return {
@@ -55,12 +53,10 @@ function Calender() {
               StartTime: new Date(event.StartTime.seconds * 1000),
               EndTime: new Date(event.EndTime.seconds * 1000),
               IsAllDay: event.IsAllDay,
-              // Status: event.Status,
             };
           });
 
           setCalEvent(convertedEvents);
-          console.log("Intial data", convertedEvents);
         }
         setflag(false);
       } catch (error) {
@@ -69,13 +65,11 @@ function Calender() {
     };
 
     fetchCalEventsFromFirestore();
-    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   const onDataBound = async () => {
     if (flag === false) {
       let events = scheduleObj.current.getEvents();
-      console.log("events", events);
 
       const FilteredEvents = events.filter((event) => event !== undefined);
       FilteredEvents.forEach((event) => {
@@ -94,11 +88,9 @@ function Calender() {
 
       if (FilteredEvents.length > 0) {
         try {
-          console.log("filteredEvents", FilteredEvents);
           await updateDoc(patientsDocRef, {
             calEvent: events,
           });
-          console.log("Data successfully updated in Firestore.");
         } catch (error) {
           console.error("Error updating calEvent in Firestore:", error);
         }
